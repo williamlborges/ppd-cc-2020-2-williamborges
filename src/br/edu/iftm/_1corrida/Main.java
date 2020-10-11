@@ -22,11 +22,13 @@ public class Main {
         for (int corredor = 1; corredor <= corredores; corredor++){
             System.out.println("Informe o nome do " + corredor + "° corredor.");
             nomes.add(input.nextLine());
+            
             // Fiz essa alteração para receber um random ao invés de escolher a velocidade
             // para dar mais emoção xD
             int vel = 1 + random.nextInt(100);
             System.out.println("O corredor " + nomes.get(corredor - 1)+ " possui velocidade " + vel);
             velocidades.add(vel);
+            
             //System.out.println("Informe a velocidade do " + corredor + "° corredor.");
             //velocidades.add(input.nextInt());
             //input.nextLine();
@@ -35,9 +37,22 @@ public class Main {
         System.out.println("\nPressione [ENTER] para iniciar a corrida.");
         input.nextLine();
         
+        Thread race[] = new Thread[nomes.size()];
         for (int index = 0; index < nomes.size(); index++) {
-            new Corrida(nomes.get(index), velocidades.get(index));
+            Corrida corrida = new Corrida(nomes.get(index), velocidades.get(index));
+            race[index] = new Thread(corrida);
+            race[index].start();
+        }	
+        
+        for (int i = 0; i < nomes.size(); i++) {
+        	try {
+				race[i].join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
         }
+        
+        System.out.println("Corrida finalizada!");
     }
 }          
 
